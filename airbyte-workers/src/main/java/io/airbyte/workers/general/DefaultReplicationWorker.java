@@ -77,7 +77,7 @@ public class DefaultReplicationWorker implements ReplicationWorker {
   private final AtomicBoolean cancelled;
   private final AtomicBoolean hasFailed;
   private final RecordSchemaValidator recordSchemaValidator;
-  private final DatadogSchemaValidationMetricReporter metricReporter;
+  private final Optional<DatadogMetricReporter> metricReporter;
 
   public DefaultReplicationWorker(final String jobId,
                                   final int attempt,
@@ -86,7 +86,7 @@ public class DefaultReplicationWorker implements ReplicationWorker {
                                   final AirbyteDestination destination,
                                   final MessageTracker messageTracker,
                                   final RecordSchemaValidator recordSchemaValidator,
-                                  final DatadogSchemaValidationMetricReporter metricReporter) {
+                                  final Optional<DatadogMetricReporter> metricReporter) {
     this.jobId = jobId;
     this.attempt = attempt;
     this.source = source;
@@ -99,16 +99,6 @@ public class DefaultReplicationWorker implements ReplicationWorker {
 
     this.cancelled = new AtomicBoolean(false);
     this.hasFailed = new AtomicBoolean(false);
-  }
-
-  public DefaultReplicationWorker(final String jobId,
-                                  final int attempt,
-                                  final AirbyteSource source,
-                                  final AirbyteMapper mapper,
-                                  final AirbyteDestination destination,
-                                  final MessageTracker messageTracker,
-                                  final RecordSchemaValidator recordSchemaValidator) {
-    this(jobId, attempt, source, mapper, destination, messageTracker, recordSchemaValidator, null);
   }
 
   /**
@@ -306,7 +296,7 @@ public class DefaultReplicationWorker implements ReplicationWorker {
                                                  final MessageTracker messageTracker,
                                                  final Map<String, String> mdc,
                                                  final RecordSchemaValidator recordSchemaValidator,
-                                                 final DatadogSchemaValidationMetricReporter metricReporter) {
+                                                 final Optional<DatadogMetricReporter> metricReporter) {
     return () -> {
       MDC.setContextMap(mdc);
       LOGGER.info("Replication thread started.");
@@ -350,7 +340,9 @@ public class DefaultReplicationWorker implements ReplicationWorker {
         if (!validationErrors.isEmpty()) {
           validationErrors.forEach((stream, errorPair) -> {
             LOGGER.warn("Schema validation errors found for stream {}. Error messages: {}", stream, errorPair.getLeft());
-            metricReporter.track(stream);
+            if (metricReporter.get() != null) {
+              metricReporter.get().trackSchemaValidationError(stream);
+            }
           });
         }
 
