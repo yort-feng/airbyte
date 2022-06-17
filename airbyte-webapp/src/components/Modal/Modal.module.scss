@@ -1,8 +1,10 @@
-@use '../../scss/colors';
-@use '../../scss/variables';
+@use "../../scss/colors";
+@use "../../scss/variables";
 
 @keyframes fadeIn {
-  from { opacity: 0; }
+  from {
+    opacity: 0;
+  }
 }
 
 .container {
@@ -20,11 +22,12 @@
 }
 
 .modal {
-  .body, .footer {
+  .body,
+  .footer {
     padding: variables.$spacing-lg variables.$spacing-xl;
   }
 
-  .body {  
+  .body {
     overflow: scroll;
   }
 
