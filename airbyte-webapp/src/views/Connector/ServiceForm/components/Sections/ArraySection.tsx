@@ -103,6 +103,8 @@ export const ArraySection: React.FC<ArraySectionProps> = ({ formField, path, dis
               renderItemName={renderItemName}
               renderItemDescription={renderItemDescription}
               disabled={disabled}
+              editModalWidth={430}
+              editModalHeight={300}
             >
               {() => (
                 <FormSection blocks={formField.properties} path={`${path}.${flow.id}`} disabled={disabled} skipAppend />

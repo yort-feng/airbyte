@@ -43,6 +43,8 @@ export interface ArrayOfObjectsEditorProps<T extends ItemBase> {
   onRemove: (index: number) => void;
   mode?: ConnectionFormMode;
   disabled?: boolean;
+  editModalWidth: number;
+  editModalHeight: number;
 }
 
 export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
@@ -59,6 +61,8 @@ export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
   addButtonText,
   mode,
   disabled,
+  editModalWidth,
+  editModalHeight,
 }: ArrayOfObjectsEditorProps<T>): JSX.Element => {
   const onAddItem = React.useCallback(() => onStartEdit(items.length), [onStartEdit, items]);
   const isEditable = editableItemIndex !== null && editableItemIndex !== undefined;
@@ -68,7 +72,7 @@ export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
 
     return (
       <Modal title={<FormattedMessage id="form.add" />}>
-        <ModalBody width={430} maxHeight={300}>
+        <ModalBody maxWidth={editModalWidth} maxHeight={editModalHeight}>
           {children(item)}
         </ModalBody>
         {onCancelEdit || onDone ? (
