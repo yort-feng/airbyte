@@ -29,14 +29,8 @@ const Modal: React.FC<ModalProps> = ({ children, title, onClose, clear, closeOnB
   }, [handleUserKeyPress, onClose]);
 
   return createPortal(
-    <div className={styles.container} onClick={() => (closeOnBackground && onClose ? onClose() : null)}>
-      {clear ? (
-        children
-      ) : (
-        <ContentCard title={title} className={styles.modal}>
-          {children}
-        </ContentCard>
-      )}
+    <div className={styles.modal} onClick={() => (closeOnBackground && onClose ? onClose() : null)}>
+      {clear ? children : <ContentCard title={title}>{children}</ContentCard>}
     </div>,
     document.body
   );

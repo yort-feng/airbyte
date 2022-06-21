@@ -1,4 +1,4 @@
-import styles from "./Modal.module.scss";
+import styles from "./ModalBody.module.scss";
 
 interface ModalBodyProps {
   width: number | string;
@@ -7,7 +7,7 @@ interface ModalBodyProps {
 
 export const ModalBody: React.FC<ModalBodyProps> = ({ children, maxHeight, width }) => {
   return (
-    <div className={styles.body} style={{ maxHeight, width }}>
+    <div className={styles.modalBody} style={{ maxHeight, width }}>
       {children}
     </div>
   );

@@ -1,5 +1,5 @@
-import styles from "./Modal.module.scss";
+import styles from "./ModalFooter.module.scss";
 
 export const ModalFooter: React.FC = ({ children }) => {
-  return <div className={styles.footer}>{children}</div>;
+  return <div className={styles.modalFooter}>{children}</div>;
 };

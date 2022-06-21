@@ -1,5 +1,4 @@
 @use "../../scss/colors";
-@use "../../scss/variables";
 
 @keyframes fadeIn {
   from {
@@ -7,7 +6,7 @@
   }
 }
 
-.container {
+.modal {
   animation: fadeIn 0.2s ease-out;
   position: absolute;
   top: 0;
@@ -19,30 +18,4 @@
   justify-content: center;
   align-items: center;
   z-index: 100;
-}
-
-.modal {
-  .body,
-  .footer {
-    padding: variables.$spacing-lg variables.$spacing-xl;
-  }
-
-  .body {
-    overflow: scroll;
-  }
-
-  .footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    border-top: variables.$border-thin solid colors.$grey-100;
-
-    & > * {
-      margin-left: variables.$spacing-md;
-
-      &:first-child {
-        margin-left: 0;
-      }
-    }
-  }
 }
