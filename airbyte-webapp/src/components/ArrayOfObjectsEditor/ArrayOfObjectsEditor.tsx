@@ -72,7 +72,7 @@ export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
 
     return (
       <Modal title={<FormattedMessage id="form.add" />}>
-        <ModalBody maxWidth={editModalWidth} maxHeight={editModalHeight}>
+        <ModalBody width={editModalWidth} maxHeight={editModalHeight}>
           {children(item)}
         </ModalBody>
         {onCancelEdit || onDone ? (
