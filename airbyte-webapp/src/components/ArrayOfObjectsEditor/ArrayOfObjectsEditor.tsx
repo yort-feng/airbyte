@@ -2,8 +2,7 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 import styled from "styled-components";
 
-import { Button } from "components";
-import Modal, { ModalBody, ModalFooter } from "components/Modal";
+import Modal from "components/Modal";
 
 import { ConnectionFormMode } from "views/Connection/ConnectionForm/ConnectionForm";
 
@@ -13,11 +12,6 @@ import { EditorRow } from "./components/EditorRow";
 const ItemsList = styled.div`
   background: ${({ theme }) => theme.grey50};
   border-radius: 4px;
-`;
-
-const SmallButton = styled(Button)`
-  margin-left: 8px;
-  padding: 6px 8px 7px;
 `;
 
 const Content = styled.div`
@@ -38,20 +32,14 @@ export interface ArrayOfObjectsEditorProps<T extends ItemBase> {
   renderItemName?: (item: T, index: number) => React.ReactNode | undefined;
   renderItemDescription?: (item: T, index: number) => React.ReactNode | undefined;
   onStartEdit: (n: number) => void;
-  onCancelEdit?: () => void;
-  onDone?: () => void;
   onRemove: (index: number) => void;
   mode?: ConnectionFormMode;
   disabled?: boolean;
-  editModalWidth: number;
-  editModalHeight: number;
 }
 
 export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
   onStartEdit,
-  onDone,
   onRemove,
-  onCancelEdit,
   renderItemName = (item) => item.name,
   renderItemDescription = (item) => item.description,
   items,
@@ -61,8 +49,6 @@ export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
   addButtonText,
   mode,
   disabled,
-  editModalWidth,
-  editModalHeight,
 }: ArrayOfObjectsEditorProps<T>): JSX.Element => {
   const onAddItem = React.useCallback(() => onStartEdit(items.length), [onStartEdit, items]);
   const isEditable = editableItemIndex !== null && editableItemIndex !== undefined;
@@ -70,27 +56,7 @@ export const ArrayOfObjectsEditor = <T extends ItemBase = ItemBase>({
   const renderEditModal = () => {
     const item = typeof editableItemIndex === "number" ? items[editableItemIndex] : undefined;
 
-    return (
-      <Modal title={<FormattedMessage id="form.add" />}>
-        <ModalBody width={editModalWidth} maxHeight={editModalHeight}>
-          {children(item)}
-        </ModalBody>
-        {onCancelEdit || onDone ? (
-          <ModalFooter>
-            {onCancelEdit && (
-              <SmallButton onClick={onCancelEdit} type="button" secondary disabled={disabled}>
-                <FormattedMessage id="form.cancel" />
-              </SmallButton>
-            )}
-            {onDone && (
-              <SmallButton onClick={onDone} type="button" data-testid="done-button" disabled={disabled}>
-                <FormattedMessage id="form.done" />
-              </SmallButton>
-            )}
-          </ModalFooter>
-        ) : null}
-      </Modal>
-    );
+    return <Modal title={<FormattedMessage id="form.add" />}>{children(item)}</Modal>;
   };
 
   return (
