@@ -1,4 +1,5 @@
 @use "../../scss/colors";
+@use "../../scss/variables";
 
 @keyframes fadeIn {
   from {
@@ -18,4 +19,9 @@
   justify-content: center;
   align-items: center;
   z-index: 100;
+}
+
+.card {
+  margin-left: 93px;
+  max-width: calc(100% - 93px - variables.$spacing-lg * 2);
 }

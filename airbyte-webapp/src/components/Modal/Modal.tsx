@@ -30,7 +30,13 @@ const Modal: React.FC<ModalProps> = ({ children, title, onClose, clear, closeOnB
 
   return createPortal(
     <div className={styles.modal} onClick={() => (closeOnBackground && onClose ? onClose() : null)}>
-      {clear ? children : <ContentCard title={title}>{children}</ContentCard>}
+      {clear ? (
+        children
+      ) : (
+        <ContentCard title={title} className={styles.card}>
+          {children}
+        </ContentCard>
+      )}
     </div>,
     document.body
   );
