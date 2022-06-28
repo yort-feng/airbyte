@@ -19,6 +19,7 @@ import {
   ValuesProps,
 } from "hooks/services/useConnectionHook";
 import { equal } from "utils/objects";
+import { CatalogDiffModal } from "views/Connection/CatalogDiffModal/CatalogDiffModal";
 import ConnectionForm from "views/Connection/ConnectionForm";
 import { FormikConnectionFormValues } from "views/Connection/ConnectionForm/formConfig";
 
@@ -54,6 +55,7 @@ export const ReplicationView: React.FC<ReplicationViewProps> = ({ onAfterSaveSch
   const [activeUpdatingSchemaMode, setActiveUpdatingSchemaMode] = useState(false);
   const [saved, setSaved] = useState(false);
   const [connectionFormValues, setConnectionFormValues] = useState<FormikConnectionFormValues>();
+  const [diffAcknowledged, setDiffAcknowledged] = useState(false);
 
   const { mutateAsync: updateConnection } = useUpdateConnection();
   const { mutateAsync: resetConnection } = useResetConnection();
@@ -170,7 +172,14 @@ export const ReplicationView: React.FC<ReplicationViewProps> = ({ onAfterSaveSch
   return (
     <Content>
       <Card>
-        {!isRefreshingCatalog && connection ? (
+        {!isRefreshingCatalog && connection.catalogDiff && !diffAcknowledged && (
+          <CatalogDiffModal
+            catalogDiff={connection.catalogDiff}
+            catalog={connection.syncCatalog}
+            setDiffAcknowledged={setDiffAcknowledged}
+          />
+        )}
+        {connection ? (
           <ConnectionForm
             mode={connection?.status !== ConnectionStatus.deprecated ? "edit" : "readonly"}
             connection={connection}
