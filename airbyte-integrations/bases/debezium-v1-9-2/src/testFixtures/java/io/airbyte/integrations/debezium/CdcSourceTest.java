@@ -65,8 +65,8 @@ public abstract class CdcSourceTest {
       CatalogHelpers.createAirbyteStream(
           MODELS_STREAM_NAME,
           MODELS_SCHEMA,
-          Field.of(COL_ID, JsonSchemaType.NUMBER),
-          Field.of(COL_MAKE_ID, JsonSchemaType.NUMBER),
+          Field.of(COL_ID, JsonSchemaType.INTEGER),
+          Field.of(COL_MAKE_ID, JsonSchemaType.INTEGER),
           Field.of(COL_MODEL, JsonSchemaType.STRING))
           .withSupportedSyncModes(Lists.newArrayList(SyncMode.FULL_REFRESH, SyncMode.INCREMENTAL))
           .withSourceDefinedPrimaryKey(List.of(List.of(COL_ID)))));
@@ -455,8 +455,8 @@ public abstract class CdcSourceTest {
         .withStream(CatalogHelpers.createAirbyteStream(
             MODELS_STREAM_NAME + "_2",
             MODELS_SCHEMA,
-            Field.of(COL_ID, JsonSchemaType.NUMBER),
-            Field.of(COL_MAKE_ID, JsonSchemaType.NUMBER),
+            Field.of(COL_ID, JsonSchemaType.INTEGER),
+            Field.of(COL_MAKE_ID, JsonSchemaType.INTEGER),
             Field.of(COL_MODEL, JsonSchemaType.STRING))
             .withSupportedSyncModes(
                 Lists.newArrayList(SyncMode.FULL_REFRESH, SyncMode.INCREMENTAL))
@@ -578,8 +578,8 @@ public abstract class CdcSourceTest {
     final AirbyteStream streamWithoutPK = CatalogHelpers.createAirbyteStream(
         MODELS_STREAM_NAME + "_2",
         MODELS_SCHEMA,
-        Field.of(COL_ID, JsonSchemaType.NUMBER),
-        Field.of(COL_MAKE_ID, JsonSchemaType.NUMBER),
+        Field.of(COL_ID, JsonSchemaType.INTEGER),
+        Field.of(COL_MAKE_ID, JsonSchemaType.INTEGER),
         Field.of(COL_MODEL, JsonSchemaType.STRING));
     streamWithoutPK.setSourceDefinedPrimaryKey(Collections.emptyList());
     streamWithoutPK.setSupportedSyncModes(List.of(SyncMode.FULL_REFRESH));
@@ -588,8 +588,8 @@ public abstract class CdcSourceTest {
     final AirbyteStream randomStream = CatalogHelpers.createAirbyteStream(
         MODELS_STREAM_NAME + "_random",
         MODELS_SCHEMA + "_random",
-        Field.of(COL_ID + "_random", JsonSchemaType.NUMBER),
-        Field.of(COL_MAKE_ID + "_random", JsonSchemaType.NUMBER),
+        Field.of(COL_ID + "_random", JsonSchemaType.INTEGER),
+        Field.of(COL_MAKE_ID + "_random", JsonSchemaType.INTEGER),
         Field.of(COL_MODEL + "_random", JsonSchemaType.STRING))
         .withSourceDefinedCursor(true)
         .withSupportedSyncModes(Lists.newArrayList(SyncMode.FULL_REFRESH, SyncMode.INCREMENTAL))
