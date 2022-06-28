@@ -56,6 +56,7 @@ export const ReplicationView: React.FC<ReplicationViewProps> = ({ onAfterSaveSch
   const [saved, setSaved] = useState(false);
   const [connectionFormValues, setConnectionFormValues] = useState<FormikConnectionFormValues>();
   const [diffAcknowledged, setDiffAcknowledged] = useState(false);
+  console.log(diffAcknowledged, setDiffAcknowledged);
 
   const { mutateAsync: updateConnection } = useUpdateConnection();
   const { mutateAsync: resetConnection } = useResetConnection();
