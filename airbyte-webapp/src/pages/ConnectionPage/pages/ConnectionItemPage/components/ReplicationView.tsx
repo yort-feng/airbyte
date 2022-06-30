@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormikHelpers } from "formik";
 import React, { useMemo, useState } from "react";
 import { FormattedMessage } from "react-intl";
-import { useAsyncFn } from "react-use";
+import { useAsyncFn, useToggle, useUpdateEffect } from "react-use";
 import styled from "styled-components";
 
 import { Button, Card } from "components";
@@ -56,8 +56,7 @@ export const ReplicationView: React.FC<ReplicationViewProps> = ({ onAfterSaveSch
   const [saved, setSaved] = useState(false);
   const [connectionFormValues, setConnectionFormValues] = useState<FormikConnectionFormValues>();
   const [diffAcknowledged, setDiffAcknowledged] = useState(false);
-  console.log(diffAcknowledged, setDiffAcknowledged);
-
+  const [schemaUpdateModalOpen, setSchemaUpdateModalOpen] = useToggle(false);
   const { mutateAsync: updateConnection } = useUpdateConnection();
   const { mutateAsync: resetConnection } = useResetConnection();
 
@@ -69,6 +68,12 @@ export const ReplicationView: React.FC<ReplicationViewProps> = ({ onAfterSaveSch
     refreshConnectionCatalog,
     [connectionId]
   );
+
+  useUpdateEffect(() => {
+    if (!isRefreshingCatalog) {
+      setSchemaUpdateModalOpen();
+    }
+  }, [isRefreshingCatalog]);
 
   const connection = useMemo(() => {
     if (activeUpdatingSchemaMode && connectionWithRefreshCatalog) {
@@ -173,14 +178,14 @@ export const ReplicationView: React.FC<ReplicationViewProps> = ({ onAfterSaveSch
   return (
     <Content>
       <Card>
-        {!isRefreshingCatalog && connection.catalogDiff && !diffAcknowledged && (
+        {schemaUpdateModalOpen && !diffAcknowledged && (
           <CatalogDiffModal
             catalogDiff={connection.catalogDiff}
             catalog={connection.syncCatalog}
             setDiffAcknowledged={setDiffAcknowledged}
           />
         )}
-        {connection ? (
+        {!isRefreshingCatalog && connection ? (
           <ConnectionForm
             mode={connection?.status !== ConnectionStatus.deprecated ? "edit" : "readonly"}
             connection={connection}
