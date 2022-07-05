@@ -9,6 +9,7 @@ import io.airbyte.commons.lang.Exceptions;
 import io.airbyte.config.Configs;
 import io.airbyte.config.EnvConfigs;
 import io.airbyte.scheduler.models.JobRunConfig;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.temporal.activity.ActivityExecutionContext;
 import io.temporal.api.common.v1.WorkflowExecution;
 import io.temporal.api.namespace.v1.NamespaceConfig;
@@ -24,6 +25,8 @@ import io.temporal.common.RetryOptions;
 import io.temporal.serviceclient.SimpleSslContextBuilder;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
+import io.temporal.serviceclient.WorkflowServiceStubsOptions.Builder;
+import io.temporal.serviceclient.WorkflowServiceStubsOptions.ChannelInitializer;
 import io.temporal.workflow.Functions;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -53,6 +56,7 @@ public class TemporalUtils {
   private static final Duration WAIT_TIME_AFTER_CONNECT = Duration.ofSeconds(5);
   private static final String HUMAN_READABLE_WORKFLOW_EXECUTION_TTL =
       DurationFormatUtils.formatDurationWords(WORKFLOW_EXECUTION_TTL.toMillis(), true, true);
+  private static final int MAX_INBOUND_MESSAGE_SIZE = 52_428_800;
 
   public static final String DEFAULT_NAMESPACE = "default";
   public static final Duration SEND_HEARTBEAT_INTERVAL = Duration.ofSeconds(10);
@@ -88,13 +92,22 @@ public class TemporalUtils {
   }
 
   private static WorkflowServiceStubsOptions getCloudTemporalOptions() {
+    final ChannelInitializer channelInitializer = builder -> ((NettyChannelBuilder) builder).maxInboundMessageSize(MAX_INBOUND_MESSAGE_SIZE);
+
     final InputStream clientCert = new ByteArrayInputStream(configs.getTemporalCloudClientCert().getBytes(StandardCharsets.UTF_8));
     final InputStream clientKey = new ByteArrayInputStream(configs.getTemporalCloudClientKey().getBytes(StandardCharsets.UTF_8));
     try {
-      return WorkflowServiceStubsOptions.newBuilder()
+      final Builder builder = WorkflowServiceStubsOptions.newBuilder()
           .setSslContext(SimpleSslContextBuilder.forPKCS8(clientCert, clientKey).build())
-          .setTarget(configs.getTemporalCloudHost())
-          .build();
+          .setTarget(configs.getTemporalCloudHost());
+      builder.setChannelInitializer(channelInitializer);
+      return builder.build();
+      //
+      // final WorkflowServiceStubsOptions options = WorkflowServiceStubsOptions.newBuilder()
+      // .setSslContext(SimpleSslContextBuilder.forPKCS8(clientCert, clientKey).build())
+      // .setTarget(configs.getTemporalCloudHost())
+      // .setChannelInitializer(channelInitializer)
+      // .build();
     } catch (final SSLException e) {
       log.error("SSL Exception occurred attempting to establish Temporal Cloud options.");
       throw new RuntimeException(e);
